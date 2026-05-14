@@ -1,159 +1,173 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-import { BellIcon, ChatIcon, imageUrl, SearchIcon } from '../../icons/icons'
-import { getAllusers } from '../../state/apiCalls'
-import { setLogout } from '../../state/userReducer'
-const Navbar = () => {
-  const userData = useSelector((state) => state.user)
-  const token = useSelector((state) => state.token)
-  const [searchitem, setSearchItem] = useState("")
-  let [allUsers, setAllusers] = useState([])
-  let [filterUsers, setFilterUsers] = useState([])
-  const allusers = async () => {
-    const users = await getAllusers(token)
-    setAllusers(users)
-  }
-  useEffect(() => {
-    allusers()
-  }, [])
-  const handleSearch = (e) => {
-    setSearchItem(e.target.value)
-  }
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
+import { getAllusers } from "../../state/apiCalls";
+import { setLogout } from "../../state/userReducer";
+
+import { imageUrl } from "../../icons/icons";
+
+import { Search, PlusSquare, Heart, MessageCircle } from "lucide-react";
+
+const Navbar = () => {
+  const userData = useSelector((state) => state.user);
+  const token = useSelector((state) => state.token);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Search states
+  const [searchitem, setSearchItem] = useState("");
+  const [allUsers, setAllusers] = useState([]);
+  const [filterUsers, setFilterUsers] = useState([]);
+
+  // Dropdown menu state
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  }
-
-  const handleLogout = () => {
-    dispatch(setLogout())
-    navigate('/login')
-  }
+  // Fetch all users
+  const allusers = async () => {
+    const users = await getAllusers(token);
+    setAllusers(users);
+  };
 
   useEffect(() => {
+    allusers();
+  }, []);
+
+  // Handle search input
+  const handleSearch = (e) => {
+    setSearchItem(e.target.value.toLowerCase());
+  };
+
+  // Filter users
+  useEffect(() => {
     const users = allUsers.filter((user) => {
-      return user?.userName?.toLowerCase().includes(searchitem) && user._id !== userData._id
-    })
-    setFilterUsers(users)
-  }, [searchitem])
+      return (
+        user?.userName?.toLowerCase().includes(searchitem) &&
+        user._id !== userData._id
+      );
+    });
+
+    setFilterUsers(users);
+  }, [searchitem]);
+
+  // Logout
+  const handleLogout = () => {
+    dispatch(setLogout());
+    navigate("/login");
+  };
+
   return (
-    <>
-      <nav className='sticky box-border top-0 z-20 w-full bg-[#02abc5] flex  justify-between h-[64px] items-center px-5 shadow-md'>
-        <div className='flex item-center space-x-5'>
-          <i className='fa-solid fa-bars'></i>
-          <h1 className='text-3xl text-white italic from-neutral-700'>Social</h1>
-        </div>
-        <div className='hidden relative xs:block border rounded sm:flex item-center space-x-5'>
-          <input onChange={handleSearch} value={searchitem} className='w-full focus:outline-none py-2 px-5 text-gray ' type='text' placeholder='Search......' />
-          <ul className="absolute z-100 top-10 bottom-0 right-0  w-full rounded-md shadow-md mt-1 divide-y divide-gray-200">
-            {filterUsers.length > 0 && searchitem !== "" ? filterUsers.map((user) => (
-              <li key={user._id} className="bg-white cursor-pointer flex">
-                <div className='border p-1 flex w-full hover:bg-gray-100'>
-                  {user.profilePic ?
-                    <img className=' w-10 h-10 rounded-full' src={user.profilePic} /> :
-                    <div className='block w-10 h-10 '>
-                      <img src={imageUrl} className='rounded-full h-full w-full' />
-                    </div>
-                  }
-                  <Link to={`/othersprofile/${user._id}`}
+    <div className="w-full bg-white border-b sticky top-0 z-50">
+      <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+        <h1
+          onClick={() => navigate("/")}
+          className="text-xl font-bold cursor-pointer"
+        >
+          Instagram
+        </h1>
+
+        <div className="hidden md:flex relative">
+          <div className="flex items-center bg-gray-100 px-3 py-1 rounded-lg">
+            <Search size={18} className="text-gray-500" />
+            <input
+              value={searchitem}
+              onChange={handleSearch}
+              type="text"
+              placeholder="Search"
+              className="bg-transparent outline-none px-2 text-sm"
+            />
+          </div>
+
+          {filterUsers.length > 0 && searchitem !== "" && (
+            <ul className="absolute top-12 left-0 w-full bg-white border rounded-lg shadow-md overflow-hidden">
+              {filterUsers.map((user) => (
+                <li
+                  key={user._id}
+                  className="flex items-center gap-3 p-2 hover:bg-gray-100 cursor-pointer"
+                >
+                  <img
+                    src={user.profilePic || imageUrl}
+                    className="w-10 h-10 rounded-full object-cover"
+                    alt=""
+                  />
+
+                  <Link
+                    to={`/othersprofile/${user._id}`}
                     onClick={() => setSearchItem("")}
+                    className="flex flex-col"
                   >
-                    <div className='px-2'>
-                      <p>{user.userName}</p>
-                      <p className='-mt-1'>{user.name}</p>
-                    </div>
+                    <span className="font-semibold text-sm">
+                      {user.userName}
+                    </span>
+                    <span className="text-xs text-gray-500">{user.name}</span>
                   </Link>
-                </div>
-              </li>
-            )) : ""}
-          </ul>
-          <div className='pr-3 cursor-pointer py-2'>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
-          </div>
-        </div>
-
-        <div className='flex'>
-          <div className="flex items-center">
-            <div className='px-4'>
-              <BellIcon />
-            </div>
-
-            <ChatIcon />
-          </div>
-
-          {userData &&
-            <p className=" px-3 py-3 text-white rounded-md text-sm font-bold">{userData?.userName}</p>
-          }
-
-          <div className='relative'>
-            {userData?.profilePic ?
-              <button className='block w-12 h-12 md:hidden' onClick={toggleMenu}>
-                <img className='rounded-full h-full w-full' src={userData?.profilePic ? userData?.profilePic : ""} alt=''></img>
-              </button> : 
-                 <div onClick={toggleMenu} className='block md:hidden w-10 h-10 '>
-                 <img src={imageUrl} className='rounded-full h-full w-full' />
-               </div>
-                }
-            {userData?.profilePic ?
-              <button onClick={() => navigate(`/profile/${userData._id}`)} className='hidden md:block w-12 h-12'>
-                <img className='rounded-full h-full w-full' src={userData?.profilePic ? userData?.profilePic : ""} alt=''></img>
-              </button> :
-
-              <div className='hidden md:block w-10 h-10 '>
-                <img src={imageUrl} className='rounded-full h-full w-full' />
-              </div>
-            }
-            <div className={`absolute top-12 right-0 w-52 justify-start bg-white text-center border border-zinc-400 rounded-lg py-2 ${isOpen ? '' : 'hidden'}`}>
-              <p onClick={() => navigate(`/`)} className='m-2 hover:text-white hover:bg-[#02abc5] py-2 rounded transition duration-200'>Home</p>
-              <p onClick={() => navigate(`/profile/${userData._id}`)} className='py-2 rounded m-2 hover:text-white hover:bg-[#02abc5] transition duration-200'>Profile</p>
-              <p onClick={() => navigate('/chat')} className='py-2 rounded m-2 hover:text-white hover:bg-[#02abc5] transition duration-200'>Messages</p>
-              <p onClick={() => navigate('/notifications')} className='py-2 rounded m-2 hover:text-white hover:bg-[#02abc5] transition duration-200'>Notification</p>
-              {userData ? <p onClick={handleLogout} className='py-2 rounded m-2 hover:text-white hover:bg-[#02abc5] transition duration-200'>Logout</p> :
-                <p onClick={() => navigate('/login')} className='py-2rounded m-2 hover:text-white hover:bg-[#02abc5] transition duration-200'>Login</p>
-              }
-            </div>
-          </div>
-          {/* {userData && <p className='p-3 font-bold'>{userData.userName}</p>} */}
-        </div>
-      </nav>
-
-      {/* search bar for small screen */}
-      {window.location.pathname !== "/chat" &&
-        <div className='relative sm:hidden flex w-full bg-[#efefef] p-2 item-center '>
-          <input onChange={handleSearch} value={searchitem} className='w-full border border-black focus:outline-none py-2 px-5  text-gray rounded-l' type='text' placeholder='search....' />
-          <div className=' relative border-black bg-[#02abc5] cursor-pointer py-2 px-5  rounded-r-md'>
-            <SearchIcon />
-            <ul className="absolute z-40 top-10 left-[-300px] w-auto right-20  bg-gray-100 rounded-md shadow-md mt-1 border border-gray-200 divide-y divide-gray-200">
-              {filterUsers.length > 0 && searchitem !== "" ? filterUsers.map((user) => (
-                <li key={user._id} className="bg-white cursor-pointer flex">
-                  <div className='border p-1 flex w-full hover:bg-gray-100'>
-                    {user.profilePic ?
-                      <img className=' w-10 h-10 rounded-full' src={user.profilePic} /> :
-                      <div className='block w-10 h-10 '>
-                        <img src={imageUrl} className='rounded-full h-full w-full' />
-                      </div>
-                    }
-                    <Link to={`/othersprofile/${user._id}`}>
-                      <div className='px-2'>
-                        <p>{user.userName}</p>
-                        <p className='-mt-1'>{user.name}</p>
-                      </div>
-                    </Link>
-                  </div>
                 </li>
-              )) : ""}
+              ))}
             </ul>
+          )}
+        </div>
+
+        {/* ✅ Icons */}
+        <div className="flex items-center gap-4">
+          <PlusSquare className="cursor-pointer" />
+
+          <Heart
+            className="cursor-pointer"
+            onClick={() => navigate("/notifications")}
+          />
+
+          <MessageCircle
+            className="cursor-pointer"
+            onClick={() => navigate("/chat")}
+          />
+
+          {/* Profile Image */}
+          <div className="relative">
+            <img
+              src={userData?.profilePic || imageUrl}
+              alt="profile"
+              onClick={() => setIsOpen(!isOpen)}
+              className="w-9 h-9 rounded-full object-cover cursor-pointer border"
+            />
+
+            {/* Dropdown Menu */}
+            {isOpen && (
+              <div className="absolute right-0 mt-3 w-44 bg-white border rounded-xl shadow-lg overflow-hidden">
+                <p
+                  onClick={() => navigate(`/profile/${userData._id}`)}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                >
+                  Profile
+                </p>
+
+                <p
+                  onClick={handleLogout}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
+                >
+                  Logout
+                </p>
+              </div>
+            )}
           </div>
         </div>
-      }
-    </>
-  )
-}
+      </div>
 
-export default Navbar
+      {/* ✅ Mobile Search */}
+      <div className="md:hidden px-4 pb-3">
+        <div className="flex items-center bg-gray-100 px-3 py-2 rounded-lg">
+          <Search size={18} className="text-gray-500" />
+          <input
+            value={searchitem}
+            onChange={handleSearch}
+            type="text"
+            placeholder="Search"
+            className="bg-transparent outline-none px-2 text-sm w-full"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;

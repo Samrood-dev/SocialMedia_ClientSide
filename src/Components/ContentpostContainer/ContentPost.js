@@ -1,151 +1,136 @@
-import axios from '../../utils/axios'
-import React, { useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { imageUrl } from '../../icons/icons'
-import { addPost } from '../../utils/constants'
-import { setPosts } from '../../state/userReducer'
-import toast, { Toaster } from 'react-hot-toast';
-import { MdOutlinePhotoLibrary } from 'react-icons/md'
-import { IoMdClose, IoMdPhotos } from "react-icons/io";
-import { UserProfileLink } from '../UserProfileLink/UserProfileLink';
-import Loader from '../Loader/Loader'
+import axios from "../../utils/axios";
+import React, { useRef, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addPost } from "../../utils/constants";
+import { setPosts } from "../../state/userReducer";
 
-const ContentPost = () => {
-  const userData = useSelector((state) => state.user)
-  const posts = useSelector((state) => state.posts)
-  const desc = useRef("")
-  const dispatch = useDispatch()
-  const [file, setFile] = useState()
-  const [loaded, setLoaded] = useState(true)
+import toast, { Toaster } from "react-hot-toast";
+
+import { IoMdClose } from "react-icons/io";
+import { ImagePlus, PlusSquare } from "lucide-react";
+
+const ContentPost = ({ setOpenToCreate }) => {
+  const userData = useSelector((state) => state.user);
+  const posts = useSelector((state) => state.posts);
+
+  const dispatch = useDispatch();
+  const desc = useRef("");
+
+  const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [isOpen, setIsOpen] = useState(false)
+
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Cleanup preview URL
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
+
+  // ✅ Image Preview
   const handleImageChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
+    const selected = e.target.files[0];
+    if (!selected) return;
 
-    if (selectedFile) {
-      setPreview(URL.createObjectURL(selectedFile));
+    setFile(selected);
+    setPreview(URL.createObjectURL(selected));
+  };
+
+  // ✅ Upload Post
+  const handlePost = async () => {
+    if (!desc.current.value.trim()) {
+      toast.error("Write something...");
+      return;
     }
-  }
-  const handlePost = async (e) => {
-    e.preventDefault()
-    var formData = new FormData()
-    formData.append("file", file)
-    formData.append("userId", userData._id)
-    formData.append("desc", desc.current?.value)
+
+    if (!file) {
+      toast.error("Select an image");
+      return;
+    }
+
     try {
-      if (!desc.current?.value) {
-        toast.error("please write something in the post", {
-          position: 'top-center'
-        })
-        return;
-      }
+      setLoading(true);
 
-      setLoaded(false)
-      const response = await axios.post(addPost, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      const post = response.data
-      desc.current.value = ""
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("userId", userData._id);
+      formData.append("desc", desc.current.value);
 
-      setFile(null)
-      setLoaded(true)
-      setIsOpen(false)
-      setPreview(null)
-      dispatch(setPosts({ posts: [post, ...posts] }))
+      const res = await axios.post(addPost, formData);
 
-      toast.success('Post created successfully', {
-        position: 'top-center'
-      })
+      dispatch(setPosts({ posts: [res.data, ...posts] }));
 
+      toast.success("Post Created ✅");
+
+      // Reset
+      setFile(null);
+      setPreview(null);
+      desc.current.value = "";
+      setOpenCreate(false);
+
+      setLoading(false);
     } catch (err) {
-      toast.error(err.message || err.error, {
-        position: 'top-center'
-      })
+      toast.error("Something went wrong");
+      setLoading(false);
     }
-  }
+  };
+
   return (
     <>
-      <div className='bg-white rounded-xl p-2'>
-        <div className='flex gap-5'>
-          <img className='rounded-full w-12 h-12' src={imageUrl} />
-          <input type='text' onClick={() => setIsOpen(true)} placeholder="What's on your mind" className=' rounded-3xl px-3 font-sans py-1 w-full outline-none bg-[#f0f2f5]' />
-        </div>
-        <hr className='mt-5' />
-        <div className="flex justify-center my-2">
-          <div className='flex justify-center cursor-pointer text-xl gap-2 py-1 px-10 hover:bg-[#f0f2f5] rounded-md'
-            onClick={() => setIsOpen(true)}>
-            <span className='text-sm'>Photo </span>
-            <div className=' w-6 h-6'>
-              <MdOutlinePhotoLibrary className='w-full h-full ' />
-            </div>
+      <div className="fixed inset-0 z-30 bg-black/60 flex justify-center items-center">
+        <div className="bg-white w-[500px] rounded-2xl shadow-xl overflow-hidden">
+          <div className="flex justify-between items-center px-5 py-4 border-b">
+            <p className="font-semibold text-base">Create new post</p>
+
+            <IoMdClose
+              className="cursor-pointer text-2xl hover:text-red-500"
+              onClick={() => setOpenToCreate(false)}
+            />
           </div>
+
+          <div className="p-5 space-y-4">
+            <textarea
+              ref={desc}
+              placeholder="Write a caption..."
+              className="w-full border rounded-lg p-3 text-sm outline-none resize-none focus:ring-2 focus:ring-blue-400"
+            />
+
+            <label className="cursor-pointer block">
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+
+              <div className="border-2 border-dashed rounded-xl p-6 text-center text-gray-500 hover:border-blue-400 transition">
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="preview"
+                    className="w-full max-h-[250px] rounded-xl object-cover"
+                  />
+                ) : (
+                  <p className="text-sm">Click to upload photo 📷</p>
+                )}
+              </div>
+            </label>
+
+            <button
+              disabled={loading}
+              onClick={handlePost}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50"
+            >
+              {loading ? "Posting..." : "Share"}
+            </button>
+          </div>
+
+          <Toaster />
         </div>
       </div>
-
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50 overflow-scroll">
-          <div className="relative p-4 w-full max-w-md max-h-full">
-            <div className="relative bg-white rounded-lg shadow">
-              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                <h3 className="text-xl font-semibold">
-                  Create Post
-                </h3>
-                <p className=' h-6 w-6 cursor-pointer' onClick={() => setIsOpen(false)}>
-                  <IoMdClose className='w-full h-full' />
-                </p>
-              </div>
-              <div className="p-4 md:p-5">
-                <UserProfileLink />
-                <div className="space-y-3">
-
-                  <div>
-                    <textarea
-                      type="text"
-                      name="content"
-                      className=" outline-none  text-sm block w-full p-2.5 "
-                      placeholder={`What's on your mind, ${userData.name}`}
-                      ref={desc}
-                    />
-                  </div>
-                  <label htmlFor='file' className='cursor-pointer'>
-                    <input type='file' accept='.jpg,.jpeg,.png' onChange={handleImageChange} name='file' id='file' hidden />
-                    <div className='flex rounded-md flex-col mt-3 max-w-full items-center py-8 bg-slate-100 justify-center'>
-                      <div className={`${preview ? 'absolute' : ''} p-2 bg-light-gradient rounded-full `}>
-                        <div className='w-6 h-6 '>
-                          <IoMdPhotos className=' w-full h-full' />
-                        </div>
-                      </div>
-                      {!preview ?
-                        (<>
-
-                          <p className='text-sm'>Add Photos</p>
-                          <p className='text-xs'>Or drag and drop</p>
-                        </>)
-                        :
-                        <>
-                          <div className='w-max-full '>
-                            <img src={preview} className='w-full' />
-                          </div>
-                        </>
-                      }
-                    </div>
-                  </label>
-                  <Toaster />
-                  <button disabled={!loaded} type='button' onClick={handlePost} className='bg-slate-200 hover:bg-light-gradient border-2 cursor-pointer rounded-md w-full p-2 tex-md'>
-                    Post
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
+  );
+};
 
-  )
-}
-
-export default ContentPost
+export default ContentPost;

@@ -1,53 +1,108 @@
-import React, { useState } from 'react'
-import toast,{Toaster } from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
-import axios from "../../utils/axios"
-import { forgotPassword } from '../../utils/constants'
+import React, { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import axios from "../../utils/axios";
+import { forgotPassword } from "../../utils/constants";
 const ForgottPassword = () => {
-    const [email, setEmail] = useState(null)
-    const navigate = useNavigate()
-    const handleEmail = (e) =>{
-        e.preventDefault()
-        if(email){
-            axios.post(forgotPassword,{email:email}).then((response)=>{
-                toast.success(response.data.msg)
-                navigate('/success')
-            }).catch((err)=>{
-                toast.error(err.response.data.msg)
-            })
-        }
+  const [email, setEmail] = useState(null);
+  const navigate = useNavigate();
+  const handleEmail = (e) => {
+    e.preventDefault();
+    if (email) {
+      axios
+        .post(forgotPassword, { email: email })
+        .then((response) => {
+          toast.success(response.data.msg);
+          navigate("/success");
+        })
+        .catch((err) => {
+          toast.error(err.response.data.msg);
+        });
     }
-    return (
-        <div className="flex min-h-full items-center justify-center py-32 px-4 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md space-y-8 ">
-                <div>
-                    <img className="mx-auto h-12 w-auto" src="https://st2.depositphotos.com/4398873/9839/i/600/depositphotos_98397934-stock-photo-triangle-geometric-knot-outline-logo.jpg" alt="Your Company" />
-                    <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900"> enter send mail</h2>
+  };
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-900 flex items-center justify-center px-4">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/10 backdrop-blur-lg">
+        {/* LEFT SIDE */}
+        <div className="hidden md:flex flex-col justify-center bg-gradient-to-br from-cyan-500 to-blue-600 p-12 text-white">
+          <h1 className="text-5xl font-bold leading-tight">
+            Reset Password 🔒
+          </h1>
 
-                </div>
-                <form className="mt-8 space-y-6" >
+          <p className="mt-6 text-lg text-white/90">
+            Don’t worry. Enter your email address and we’ll send you a password
+            reset link.
+          </p>
 
-                    <div className="-space-y-px rounded-md shadow-sm">
-                        <div>
-                            <label htmlFor="email" className="sr-only">Enter your email</label>
-                            <input onChange={(e)=>setEmail(e.target.value)} id="email" name="email" type="email" required className=" pl-3 relative block w-full rounded-t-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-0 sm:text-sm " placeholder="Enter eamil adress" />
-                        </div>
-                    </div>
-                    <div>
-                        <button onClick={handleEmail} type='submit' className="group relative flex w-full justify-center rounded-md bg-slate-800 py-2 px-3 text-sm font-semibold text-white hover:bg-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <svg className="h-5 w-5 group-hover:text-indigo-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
-                                </svg>
-                            </span>
-                            Submit
-                        </button>
-                    </div>
-                </form>
-                <Toaster/>
+          <div className="mt-10 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-white"></div>
+              <p>Secure password recovery</p>
             </div>
-        </div>
-    )
-}
 
-export default ForgottPassword
+            <div className="flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-white"></div>
+              <p>Fast email verification</p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-white"></div>
+              <p>Get back to your account quickly</p>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="bg-white p-8 md:p-12">
+          <div className="flex flex-col items-center">
+            <img
+              className="h-14 w-14 rounded-2xl object-cover shadow-lg"
+              src="https://st2.depositphotos.com/4398873/9839/i/600/depositphotos_98397934-stock-photo-triangle-geometric-knot-outline-logo.jpg"
+              alt="Logo"
+            />
+
+            <h2 className="mt-5 text-3xl font-bold text-gray-800">
+              Forgot Password
+            </h2>
+
+            <p className="mt-2 text-sm text-gray-500 text-center">
+              Enter your registered email address
+            </p>
+          </div>
+
+          <form className="mt-10 space-y-6">
+            {/* EMAIL */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Email Address
+              </label>
+
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                id="email"
+                name="email"
+                type="email"
+                required
+                placeholder="Enter your email address"
+                className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition-all focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
+              />
+            </div>
+
+            {/* BUTTON */}
+            <button
+              onClick={handleEmail}
+              type="submit"
+              className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 font-semibold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-cyan-500/30"
+            >
+              Send Reset Link
+            </button>
+          </form>
+
+          <Toaster />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ForgottPassword;

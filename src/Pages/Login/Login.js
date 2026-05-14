@@ -1,105 +1,172 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import axios from '../../utils/axios'
-import { setLogin } from '../../state/userReducer'
-import toast, { Toaster } from 'react-hot-toast';
-import { googleLogin, loginPost } from '../../utils/constants'
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import axios from "../../utils/axios";
+import { setLogin } from "../../state/userReducer";
+import toast, { Toaster } from "react-hot-toast";
+import { googleLogin, loginPost } from "../../utils/constants";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 const Login = () => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const [userName, setUserName] = useState('')
-    const [password, setPassword] = useState('')
-    const [user, setUser] = useState(null)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [user, setUser] = useState(null);
 
-    const handleLogin = (e) => {
-        e.preventDefault()
-        axios.post(loginPost, { userName, password }, {
-            headers: { "Content-Type": "application/json" },
-        }).then((userData) => {
-            dispatch(setLogin(userData.data))
-            navigate('/')
-        }).catch((err) => {
-            ((error) => {
-                toast.error(error.response.data.msg, {
-                    position: "top-center",
-                });
-            })(err);
-        })
+  const handleLogin = (e) => {
+    e.preventDefault();
+    axios
+      .post(
+        loginPost,
+        { userName, password },
+        {
+          headers: { "Content-Type": "application/json" },
+        },
+      )
+      .then((userData) => {
+        dispatch(setLogin(userData.data));
+        navigate("/");
+      })
+      .catch((err) => {
+        ((error) => {
+          toast.error(error.response.data.msg, {
+            position: "top-center",
+          });
+        })(err);
+      });
+  };
+  const responseMessage = (response) => {
+    setUser(response.credential);
+  };
+  const errorMessage = (error) => {
+    console.log(error);
+  };
+  useEffect(() => {
+    if (user) {
+      const getUser = async () => {
+        const response = await axios.get(googleLogin, {
+          headers: {
+            Authorization: `barear ${user}`,
+          },
+        });
+        dispatch(setLogin(response.data));
+        navigate("/");
+      };
+      getUser();
     }
-    const responseMessage = (response) => {
-        setUser(response.credential)
-    };
-    const errorMessage = (error) => {
-        console.log(error);
-    };
-    useEffect(() => {
-        if (user) {
-            const getUser = async () => {
-                const response = await axios.get(googleLogin, {
-                    headers: {
-                        "Authorization": `barear ${user}`
-                    }
-                })
-                dispatch(setLogin(response.data))
-                navigate('/')
-            }
-            getUser();
-        }
-    }, [user, dispatch, navigate])
+  }, [user, dispatch, navigate]);
 
-    return (
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-900 flex items-center justify-center px-4">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 bg-white/10 backdrop-blur-lg rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+        <div className="hidden md:flex flex-col justify-center p-12 text-white bg-gradient-to-br from-cyan-500 to-blue-600">
+          <h1 className="text-5xl font-bold leading-tight">Welcome Back 👋</h1>
 
-        <div className="flex min-h-screen bg-[#02abc5] items-center justify-around py-32 px-4 sm:px-6 lg:px-8">
-            <div></div>
-            <div className="w-full max-w-md space-y-8 rounded p-2  ">
-                <div>
-                    <img className="h-12 w-auto" src="https://st2.depositphotos.com/4398873/9839/i/600/depositphotos_98397934-stock-photo-triangle-geometric-knot-outline-logo.jpg" alt="Your Company" />
-                    <h2 className=" text-center text-3xl font-bold tracking-tight text-gray-700">Sign in to Social Media</h2>
+          <p className="mt-6 text-lg text-white/90">
+            Connect with friends, share moments, and chat in real-time.
+          </p>
 
-                </div>
-                <form className="mt-8 space-y-6" onSubmit={(e) => handleLogin(e)}>
-
-                    <div className="-space-y-px rounded-md shadow-sm">
-                        <div>
-                            <label htmlFor="user-name" className="sr-only">User Name</label>
-                            <input onChange={(e) => setUserName(e.target.value)} id="user-name" name="userName" type="text" required className=" pl-3 relative block w-full rounded-t-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-0 sm:text-sm " placeholder="Enter UserName" />
-                        </div>
-                        <div className='pt-5'>
-                            <label htmlFor="password" className="sr-only">Password</label>
-                            <input onChange={(e) => setPassword(e.target.value)} id="password" name="password" type="password" required className="pl-3 relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-0 sm:text-sm sm:leading-6" placeholder="Password" />
-                        </div>
-                    </div>
-
-                    <div>
-                        <div className="text-sm justify-between flex ">
-                            <Link to='/register' className='w-1/2'>
-                                <p className="text-sm text-white px-4 hover:font-bold">Create new Account ?</p>
-                            </Link>
-                            <p onClick={() => navigate('/forgottPassword')} className="w-1/2  cursor-pointer text-gray-500 hover:font-bold">Forgot your password?</p>
-                        </div>
-                    </div>
-                    <div className='w-full'>
-                        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-                            <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
-                        </GoogleOAuthProvider>
-
-                    </div>
-                    <div>
-                        <button type='submit' className="group relative flex w-full justify-center rounded-md bg-slate-800 py-2 px-3 text-sm font-semibold text-white hover:bg-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <svg className="h-5 w-5 group-hover:text-indigo-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
-                                </svg>
-                            </span>
-                            Sign in
-                        </button>
-                        <Toaster />
-                    </div>
-                </form>
+          <div className="mt-10 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-white"></div>
+              <p>Real-time messaging</p>
             </div>
+
+            <div className="flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-white"></div>
+              <p>Share photos & posts</p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-white"></div>
+              <p>Follow and connect</p>
+            </div>
+          </div>
         </div>
-    )
-}
-export default Login
+
+        <div className="bg-white p-8 md:p-12">
+          <div className="flex flex-col items-center">
+            <img
+              className="h-14 w-14 rounded-2xl object-cover shadow-lg"
+              src="https://st2.depositphotos.com/4398873/9839/i/600/depositphotos_98397934-stock-photo-triangle-geometric-knot-outline-logo.jpg"
+              alt="Logo"
+            />
+
+            <h2 className="mt-5 text-3xl font-bold text-gray-800">Sign In</h2>
+
+            <p className="mt-2 text-sm text-gray-500">
+              Login to continue your journey
+            </p>
+          </div>
+
+          <form className="mt-10 space-y-5" onSubmit={(e) => handleLogin(e)}>
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Username
+              </label>
+
+              <input
+                onChange={(e) => setUserName(e.target.value)}
+                type="text"
+                required
+                placeholder="Enter your username"
+                className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition-all focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Password
+              </label>
+
+              <input
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                required
+                placeholder="Enter your password"
+                className="mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition-all focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-sm">
+              <Link
+                to="/register"
+                className="text-cyan-600 hover:text-cyan-700 font-medium"
+              >
+                Create account
+              </Link>
+
+              <p
+                onClick={() => navigate("/forgottPassword")}
+                className="cursor-pointer text-gray-500 hover:text-gray-700"
+              >
+                Forgot password?
+              </p>
+            </div>
+
+            <div className="flex justify-center pt-2">
+              <GoogleOAuthProvider
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              >
+                <GoogleLogin
+                  onSuccess={responseMessage}
+                  onError={errorMessage}
+                />
+              </GoogleOAuthProvider>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 font-semibold text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-cyan-500/30"
+            >
+              Sign In
+            </button>
+
+            <Toaster />
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+export default Login;

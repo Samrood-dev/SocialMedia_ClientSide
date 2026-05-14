@@ -1,44 +1,115 @@
-import { useSelector } from 'react-redux'
-import React, { useEffect, useState } from 'react'
-import Leftbar from '../../Components/LeftpostContainer/Leftbar'
-import { getNotifications } from '../../state/apiCalls'
-import Notificationlist from './Notificationlist'
+import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { getNotifications } from "../../state/apiCalls";
+import Notificationlist from "./Notificationlist";
+
 const Notification = () => {
-    const token = useSelector((state) => state.token)
-    const [notification, setNotification] = useState([])
+  const token = useSelector((state) => state.token);
 
-    useEffect(() => {
-        const fetchNotification = async () => {
-            const response = await getNotifications(token)
-            setNotification(response)
-        }
+  const [notification, setNotification] = useState([]);
 
-        fetchNotification()
-    }, [token])
-    
-    return (
-        <>
+  useEffect(() => {
+    const fetchNotification = async () => {
+      const response = await getNotifications(token);
+      setNotification(response);
+    };
 
-            <section className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3 mx-auto h-[calc(100vh-64px)]">
-                <div className='hidden md:block col-span-1 overflow-scroll'>
-                    <Leftbar />
-                </div>
-                <div className='md:col-span-3 overflow-scroll'>
-                    <div className="bg-white rounded-md shadow-md  ">
-                        <div className='p-4 overflow-y-scroll overflow scrollbar-hide'>
+    fetchNotification();
+  }, [token]);
 
-                            {notification.length !== 0 ? notification.map(({ type, user, friend, content, postId, createdAt }, index) => (
-                                <React.Fragment key={index}>
-                                    <Notificationlist type={type} createdAt={createdAt} user={user} friend={friend} content={content} post={postId} />
-                                </React.Fragment>
-                            )) : <div className='p-28 text-2xl font-semibold'>No Notifications</div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </>
-    )
-}
+  return (
+    <div className="h-screen overflow-scroll">
+      <div
+        className="
+          mx-auto
+          h-full
+          overflow-hidden
+          border
+          border-gray-200
+          shadow-xl
+        "
+      >
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-gray-200
+            px-6
+            py-5
+          "
+        >
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Notifications</h1>
 
-export default Notification
+            <p className="mt-1 text-sm text-gray-500">
+              Stay updated with your latest activities
+            </p>
+          </div>
+
+          <div
+            className="
+              flex
+              h-14
+              w-14
+              items-center
+              justify-center
+              rounded-2xl
+              bg-cyan-100
+            "
+          >
+            🔔
+          </div>
+        </div>
+
+        <div className="h-[calc(100vh-96px)] overflow-y-auto p-4 custom-scrollbar">
+          {notification?.length > 0 ? (
+            <div className="space-y-3">
+              {notification.map(
+                ({ type, user, friend, content, postId, createdAt }, index) => (
+                  <Notificationlist
+                    key={index}
+                    type={type}
+                    createdAt={createdAt}
+                    user={user}
+                    friend={friend}
+                    content={content}
+                    post={postId}
+                  />
+                ),
+              )}
+            </div>
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <div
+                className="
+                  flex
+                  h-24
+                  w-24
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-gray-100
+                  text-5xl
+                "
+              >
+                🔔
+              </div>
+
+              <h2 className="mt-3 text-2xl font-bold text-gray-700">
+                No Notifications
+              </h2>
+
+              <p className="mt-2 text-sm text-gray-500">
+                You're all caught up for now.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Notification;

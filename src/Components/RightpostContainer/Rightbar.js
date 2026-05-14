@@ -1,44 +1,127 @@
-import React, { useEffect, useState } from 'react'
-import FriendInfo from '../smallComponants/FriendInfo'
-import { useDispatch, useSelector } from 'react-redux'
-import { suggessions } from '../../utils/constants'
-import axios from '../../utils/axios'
-import { setAllUsers } from '../../state/userReducer'
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { suggessions } from "../../utils/constants";
+import axios from "../../utils/axios";
+import { setAllUsers } from "../../state/userReducer";
+import { imageUrl } from "../../icons/icons";
+import FriendInfo from "../smallComponants/FriendInfo";
 
 const Rightbar = () => {
-  // const [render, setRender]= useState(false)
-  const token = useSelector((state) => state.token)
-  const users = useSelector((state)=>state.users)
-  const dispatch = useDispatch()
-  const fetchUsers = () => {
-    axios.get(suggessions, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).then((response)=>{
-      dispatch(setAllUsers({users:response.data.data}))
-    }).catch((err)=>{
-      console.log(err); 
-    })
-  }
+  const token = useSelector((state) => state.token);
+  const users = useSelector((state) => state.users);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    fetchUsers()
-  },[])
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(suggessions, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        dispatch(
+          setAllUsers({
+            users: response.data.data,
+          }),
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchUsers();
+  }, [dispatch, token]);
+
   return (
-    <>
-        <div className="p-2 rounded-lg">
-          <h1 className="text-md bg-white rounded-md p-2 font-bold mb-4">Suggested for you</h1>
-          <ul className='overflow-y-scroll hide-scrollbar max-h-[25rem] '>
-            {users?.map((user)=>(
-            <li className="py-2 px-1" key={user._id}>
-              <FriendInfo name={user.name} key={user._id}  id={user._id} userName={user.userName} profilePic={user.profilePic} />
-            </li>
+    <div className="hidden bg-transparent md:block h-full min-w-[340px]">
+      <div className="border-b border-gray-100 p-5">
+        <h2 className="text-xl font-bold text-gray-800">Suggestions For You</h2>
+
+        <p className="mt-1 text-sm text-gray-500">
+          Discover and connect with people
+        </p>
+      </div>
+
+      <div className="max-h-[500px] overflow-y-auto custom-scrollbar p-3">
+        {users?.length > 0 ? (
+          <div className="space-y-3">
+            {users.map((user) => (
+              <FriendInfo
+                key={user._id}
+                id={user._id}
+                profilePic={user.profilePic}
+                name={user.name}
+                userName={user.userName}
+              />
             ))}
-          </ul>
-        </div>
-    </>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <div
+              className="
+                  flex
+                  h-16
+                  w-16
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-cyan-100
+                  text-2xl
+                "
+            >
+              👥
+            </div>
 
-  )
-}
+            <h3 className="mt-4 text-lg font-semibold text-gray-700">
+              No Suggestions
+            </h3>
 
-export default Rightbar
+            <p className="mt-1 text-sm text-gray-500">
+              Suggestions will appear here.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* <div
+        className="
+          mt-4
+          rounded-3xl
+          border
+          border-gray-200
+          bg-white
+          p-5
+          shadow-sm
+        "
+      >
+        <h3 className="text-lg font-semibold text-gray-800">Social Media</h3>
+
+        <p className="mt-2 text-sm leading-relaxed text-gray-500">
+          Connect with friends, share moments, and chat in real time.
+        </p>
+
+        <button
+          className="
+            mt-4
+            w-full
+            rounded-2xl
+            bg-gradient-to-r
+            from-cyan-500
+            to-blue-600
+            py-3
+            font-semibold
+            text-white
+            transition-all
+            hover:scale-[1.02]
+          "
+        >
+          Explore
+        </button>
+      </div> */}
+    </div>
+  );
+};
+
+export default Rightbar;

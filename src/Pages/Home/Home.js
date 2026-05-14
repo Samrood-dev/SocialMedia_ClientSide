@@ -1,25 +1,15 @@
-import React from 'react'
-import Leftbar from '../../Components/LeftpostContainer/Leftbar'
-import MainPost from '../../Components/MainpostContainer/MainPost'
-import Rightbar from '../../Components/RightpostContainer/Rightbar'
-
-const Home = () => {
-
+import Feed from "../../Components/PostContainer/Feed";
+import Rightbar from "../../Components/RightpostContainer/Rightbar";
+export default function Home() {
   return (
     <>
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3 mx-auto h-[calc(100vh-64px)]">
-        <div className='hidden md:block col-span-1 overflow-scroll'>
-          <Leftbar />
+      {/* <Navbar /> */}
+      <div className="flex h-full">
+        <div className="flex-1 overflow-auto flex justify-center">
+          <Feed />
         </div>
-        <div className='md:col-span-2 overflow-scroll hide-scrollbar'>
-          <MainPost />
-        </div>
-        <div className='md:col-span-1'>
-          <Rightbar />
-        </div>
-      </section>
+        <Rightbar />
+      </div>
     </>
-  )
+  );
 }
-
-export default Home
