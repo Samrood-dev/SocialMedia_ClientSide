@@ -115,7 +115,6 @@ const ProfileMainPost = () => {
   return (
     <div className="h-full bg-gray-50 py-6 px-4">
       <div className="h-full mx-auto overflow-auto">
-        {/* COVER */}
         <div className="relative h-72 rounded-3xl overflow-hidden shadow-xl bg-gradient-to-r from-slate-900 via-cyan-700 to-blue-600">
           <img
             src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200"
@@ -123,7 +122,6 @@ const ProfileMainPost = () => {
             className="w-full h-full object-cover opacity-40"
           />
 
-          {/* PROFILE */}
           <div className="absolute bottom-0 left-0 w-full p-6 flex flex-col md:flex-row md:items-end md:justify-between">
             <div className="flex items-end gap-5">
               <ProfilePic
@@ -140,7 +138,6 @@ const ProfileMainPost = () => {
               </div>
             </div>
 
-            {/* BUTTONS */}
             <div className="mt-4 md:mt-0 flex gap-3">
               {userData._id !== profileId ? (
                 <>
@@ -188,7 +185,6 @@ const ProfileMainPost = () => {
           </div>
         </div>
 
-        {/* STATS */}
         <div className="grid grid-cols-3 gap-4 mt-6">
           <div className="bg-white rounded-2xl p-5 shadow-sm text-center">
             <h2 className="text-2xl font-bold text-gray-800">
@@ -212,7 +208,6 @@ const ProfileMainPost = () => {
           </div>
         </div>
 
-        {/* TABS */}
         <div className="bg-white rounded-2xl shadow-sm mt-6 p-3 flex gap-3 overflow-x-auto">
           <button
             onClick={() => setTab("posts")}

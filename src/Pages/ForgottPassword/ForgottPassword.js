@@ -23,7 +23,6 @@ const ForgottPassword = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-900 flex items-center justify-center px-4">
       <div className="w-full max-w-5xl grid md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/10 backdrop-blur-lg">
-        {/* LEFT SIDE */}
         <div className="hidden md:flex flex-col justify-center bg-gradient-to-br from-cyan-500 to-blue-600 p-12 text-white">
           <h1 className="text-5xl font-bold leading-tight">
             Reset Password 🔒
@@ -52,7 +51,6 @@ const ForgottPassword = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="bg-white p-8 md:p-12">
           <div className="flex flex-col items-center">
             <img
@@ -71,7 +69,6 @@ const ForgottPassword = () => {
           </div>
 
           <form className="mt-10 space-y-6">
-            {/* EMAIL */}
             <div>
               <label className="text-sm font-medium text-gray-700">
                 Email Address
@@ -88,7 +85,6 @@ const ForgottPassword = () => {
               />
             </div>
 
-            {/* BUTTON */}
             <button
               onClick={handleEmail}
               type="submit"

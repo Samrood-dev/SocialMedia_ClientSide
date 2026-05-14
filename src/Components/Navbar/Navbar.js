@@ -108,7 +108,6 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* ✅ Icons */}
         <div className="flex items-center gap-4">
           <PlusSquare className="cursor-pointer" />
 
@@ -122,7 +121,6 @@ const Navbar = () => {
             onClick={() => navigate("/chat")}
           />
 
-          {/* Profile Image */}
           <div className="relative">
             <img
               src={userData?.profilePic || imageUrl}
@@ -131,7 +129,6 @@ const Navbar = () => {
               className="w-9 h-9 rounded-full object-cover cursor-pointer border"
             />
 
-            {/* Dropdown Menu */}
             {isOpen && (
               <div className="absolute right-0 mt-3 w-44 bg-white border rounded-xl shadow-lg overflow-hidden">
                 <p
@@ -153,7 +150,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* ✅ Mobile Search */}
       <div className="md:hidden px-4 pb-3">
         <div className="flex items-center bg-gray-100 px-3 py-2 rounded-lg">
           <Search size={18} className="text-gray-500" />

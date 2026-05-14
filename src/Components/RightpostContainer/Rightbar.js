@@ -84,42 +84,6 @@ const Rightbar = () => {
           </div>
         )}
       </div>
-
-      {/* <div
-        className="
-          mt-4
-          rounded-3xl
-          border
-          border-gray-200
-          bg-white
-          p-5
-          shadow-sm
-        "
-      >
-        <h3 className="text-lg font-semibold text-gray-800">Social Media</h3>
-
-        <p className="mt-2 text-sm leading-relaxed text-gray-500">
-          Connect with friends, share moments, and chat in real time.
-        </p>
-
-        <button
-          className="
-            mt-4
-            w-full
-            rounded-2xl
-            bg-gradient-to-r
-            from-cyan-500
-            to-blue-600
-            py-3
-            font-semibold
-            text-white
-            transition-all
-            hover:scale-[1.02]
-          "
-        >
-          Explore
-        </button>
-      </div> */}
     </div>
   );
 };

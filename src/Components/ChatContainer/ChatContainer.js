@@ -81,7 +81,6 @@ const ChatContainer = ({ messages, currentChat, setMessages }) => {
   };
   return (
     <div className="h-full flex flex-col bg-gray-100">
-      {/* HEADER */}
       <div className="px-4 py-2 bg-white border-b flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <button

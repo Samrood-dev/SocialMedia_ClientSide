@@ -92,7 +92,6 @@ export default function Post(props) {
           </div>
         </div>
 
-        {/* Menu */}
         {user?._id === author?._id ? (
           <div className="relative">
             <BsThreeDots
@@ -141,14 +140,13 @@ export default function Post(props) {
         <img
           src={image}
           alt="post"
-          className="w-full min-h-[250px] object-cover"
+          className="w-full min-h-[250px] max-w-[400px] object-cover mx-auto"
         />
       </div>
 
       <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-5">
-            {/* Like */}
             <button onClick={PatchLike} className="transition hover:scale-110">
               <Heart
                 size={24}
@@ -158,7 +156,6 @@ export default function Post(props) {
               />
             </button>
 
-            {/* Comment */}
             <button
               onClick={() => setShowSinglePost(true)}
               className="transition hover:scale-110"
@@ -166,13 +163,11 @@ export default function Post(props) {
               <MessageCircle size={24} className="text-gray-700" />
             </button>
 
-            {/* Share */}
             <button className="transition hover:scale-110">
               <Send size={22} className="text-gray-700" />
             </button>
           </div>
 
-          {/* Bookmark */}
           <button className="transition hover:scale-110">
             <Bookmark size={23} className="text-gray-700" />
           </button>

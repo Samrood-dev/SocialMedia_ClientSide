@@ -84,10 +84,7 @@ const ProfilePic = ({ profileId, profilePic }) => {
           <div className="relative">
             <label htmlFor="file" className="cursor-pointer">
               <div className="absolute -left-5  w-8 h-8">
-                {/* <div className=' '> */}
                 <CameraIcon className={"text-blue-200"} />
-                {/* </div> */}
-                {/* <FaEdit className='w-full text-[#3d3f50] h-full rounded-full' /> */}
               </div>
               <input
                 type="file"
@@ -96,10 +93,6 @@ const ProfilePic = ({ profileId, profilePic }) => {
                 hidden
               />
             </label>
-            {/* {showInput === true &&
-
-                            <button className='font-bold border text-white rounded-lg ml-2 px-2 py-1 bg-[#3d3f50]' onClick={handleSubmit}>Submit</button>
-                        } */}
           </div>
         )}
       </div>

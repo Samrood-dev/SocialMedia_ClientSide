@@ -26,7 +26,6 @@ const Notificationlist = ({ type, user, friend, content, post, createdAt }) => {
           hover:bg-gray-50
         "
       >
-        {/* PROFILE IMAGE */}
         <div className="shrink-0">
           {friend?.profilePic ? (
             <img
@@ -45,7 +44,6 @@ const Notificationlist = ({ type, user, friend, content, post, createdAt }) => {
           )}
         </div>
 
-        {/* CONTENT */}
         <div className="flex-1 min-w-0">
           <p className="text-sm leading-relaxed text-gray-700">
             <span className="font-semibold text-gray-900">
@@ -59,7 +57,6 @@ const Notificationlist = ({ type, user, friend, content, post, createdAt }) => {
           </p>
         </div>
 
-        {/* POST IMAGE */}
         {post?.image && (
           <div className="shrink-0">
             <img

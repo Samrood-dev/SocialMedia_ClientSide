@@ -9,7 +9,6 @@ const Feed = ({ isMypost, render, forceRender, Profileposts, profileId }) => {
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
-  // const [userPosts, setUserPosts] = useState([])
   const dispatch = useDispatch();
   const [showing, setShowing] = useState(2);
 

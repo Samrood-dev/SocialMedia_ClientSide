@@ -100,7 +100,6 @@ const Contact = ({ currentUser }) => {
           🔍
         </div>
 
-        {/* SEARCH RESULTS */}
         {filterUsers?.length > 0 && (
           <div
             className="

@@ -48,9 +48,7 @@ const EditProfile = ({ setIsModal }) => {
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-        {/* MODAL */}
         <div className="w-full max-w-lg rounded-3xl bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-          {/* HEADER */}
           <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-5">
             <div className="flex items-center justify-between">
               <div>
@@ -70,7 +68,6 @@ const EditProfile = ({ setIsModal }) => {
             </div>
           </div>
 
-          {/* FORM */}
           <div className="p-6">
             <Formik
               initialValues={initialValues}
@@ -78,7 +75,6 @@ const EditProfile = ({ setIsModal }) => {
               onSubmit={handleSubmit}
             >
               <Form className="space-y-5">
-                {/* USERNAME */}
                 <div>
                   <label className="text-sm font-semibold text-gray-700">
                     Username
@@ -98,7 +94,6 @@ const EditProfile = ({ setIsModal }) => {
                   />
                 </div>
 
-                {/* EMAIL */}
                 <div>
                   <label className="text-sm font-semibold text-gray-700">
                     Email Address
@@ -118,7 +113,6 @@ const EditProfile = ({ setIsModal }) => {
                   />
                 </div>
 
-                {/* BIO */}
                 <div>
                   <label className="text-sm font-semibold text-gray-700">
                     Bio
@@ -139,7 +133,6 @@ const EditProfile = ({ setIsModal }) => {
                   />
                 </div>
 
-                {/* PHONE */}
                 <div>
                   <label className="text-sm font-semibold text-gray-700">
                     Phone Number
@@ -159,7 +152,6 @@ const EditProfile = ({ setIsModal }) => {
                   />
                 </div>
 
-                {/* BUTTONS */}
                 <div className="flex gap-3 pt-2">
                   <button
                     type="submit"

@@ -29,7 +29,6 @@ const VerifyEmail = () => {
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-900 flex items-center justify-center px-4">
       <div className="w-full max-w-5xl h-[85vh] grid md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/10 backdrop-blur-lg">
-        {/* LEFT SIDE */}
         <div className="hidden md:flex flex-col justify-center bg-gradient-to-br from-cyan-500 to-blue-600 p-8 text-white">
           <h1 className="text-4xl font-bold leading-tight">
             Verify Your Email ✉️
@@ -58,7 +57,6 @@ const VerifyEmail = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="bg-white p-6 md:p-8 flex flex-col justify-center">
           <div className="flex flex-col items-center">
             <img
@@ -77,7 +75,6 @@ const VerifyEmail = () => {
           </div>
 
           <form className="mt-8 space-y-5">
-            {/* OTP INPUT */}
             <div>
               <label className="text-sm font-medium text-gray-700">
                 Verification Code
@@ -95,7 +92,6 @@ const VerifyEmail = () => {
               />
             </div>
 
-            {/* BUTTON */}
             <button
               type="submit"
               onClick={handleOtp}

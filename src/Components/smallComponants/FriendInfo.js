@@ -78,7 +78,6 @@ const FriendInfo = ({ id, userName, profilePic, name }) => {
         transition-all
       "
     >
-      {/* LEFT */}
       <Link to={`/othersprofile/${id}`} className="flex items-center gap-3">
         {profilePic ? (
           <img
@@ -115,7 +114,6 @@ const FriendInfo = ({ id, userName, profilePic, name }) => {
         </div>
       </Link>
 
-      {/* RIGHT */}
       <div>
         {!Following && user.followers.includes(id) && (
           <button
